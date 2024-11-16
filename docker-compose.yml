@@ -4,6 +4,8 @@ x-base_service: &base_service
     volumes:
       - &v1 ./data:/data
       - &v2 ./output:/output
+      
+     
     stop_signal: SIGKILL
     tty: true
     deploy:
@@ -14,7 +16,14 @@ x-base_service: &base_service
                 device_ids: ['0']
                 capabilities: [compute, utility]
 
-name: webui-docker
+name: cody-webui-docker
+
+volumes:
+  ollama_data:
+  openwebui_data:
+  ollama-modelsv1:
+    name: "ollama-modelsv1"
+    external: true
 
 services:
   download:
@@ -25,31 +34,66 @@ services:
 
   auto: &automatic
     <<: *base_service
-    profiles: ["auto"]
+    profiles: ["auto", "ai"]
     build: ./services/AUTOMATIC1111
     image: sd-auto:78
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
 
-  auto-cpu:
-    <<: *automatic
-    profiles: ["auto-cpu"]
-    deploy: {}
-    environment:
-      - CLI_ARGS=--no-half --precision full --allow-code --enable-insecure-extension-access --api
 
-  comfy: &comfy
+  # auto-cpu:
+    # <<: *automatic
+    # profiles: ["auto-cpu", "ai"]
+    # deploy: {}
+    # environment:
+      # - CLI_ARGS=--no-half --precision full --allow-code --enable-insecure-extension-access --api
+
+  # comfy: &comfy
+    # <<: *base_service
+    # profiles: ["comfy", "ai"]
+    # build: ./services/comfy/
+    # image: sd-comfy:7
+    # environment:
+      # - CLI_ARGS=
+
+
+  # comfy-cpu:
+    # <<: *comfy
+    # profiles: ["comfy-cpu", "ai"]
+    # deploy: {}
+    # environment:
+      # - CLI_ARGS=--cpu
+
+  # ollama provides the framework for  runnning the LLM's
+  ollama:
     <<: *base_service
-    profiles: ["comfy"]
-    build: ./services/comfy/
-    image: sd-comfy:7
+    image: ollama/ollama:latest  
+    container_name: ollama
+    profiles: ["ai"]
+    ports:
+      - "11434:11434"
+    volumes:
+      # persist models in ./models on host machine
+      # translates to the llocation of the docker-compose.yaml on host machine
+      #- "./models:/root/.ollama/models/blobs"
+      - "ollama-modelsv1:/root/.ollama/models/blobs"
+      
+    deploy:
+        resources:
+            reservations:
+                devices:
+                  - driver: nvidia
+                    count: 1
+                    capabilities: [gpu]
+  # openwebui provides the UI as well as the API, RAG and other advanced configurations for the LLM's
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:latest  
+    container_name: openwebui
+    profiles: ["ai"]
+    ports:
+      - "5555:8080"
     environment:
-      - CLI_ARGS=
-
-
-  comfy-cpu:
-    <<: *comfy
-    profiles: ["comfy-cpu"]
-    deploy: {}
-    environment:
-      - CLI_ARGS=--cpu
+      # EnvVars from: https://docs.openwebui.com/getting-started/advanced-topics/env-configuration/#image-generation
+      - ENABLE_IMAGE_GENERATION=true
+      - IMAGE_GENERATION_ENGINE=automatic1111
+      - AUTOMATIC1111_BASE_URL=http://auto:7860 # the internal adress of the auto  container

@@ -26,12 +26,25 @@ RUN --mount=type=cache,target=/var/cache/apt \
   ffmpeg libglfw3-dev libgles2-mesa-dev pkg-config libcairo2 libcairo2-dev build-essential
 
 
+# WORKDIR /
+#RUN --mount=type=cache,target=/root/.cache/pip \
+#  git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
+#  cd stable-diffusion-webui && \
+#  git reset --hard v1.9.4 && \
+#  pip install -r requirements_versions.txt
+
+
 WORKDIR /
 RUN --mount=type=cache,target=/root/.cache/pip \
   git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git && \
   cd stable-diffusion-webui && \
-  git reset --hard v1.9.4 && \
-  pip install -r requirements_versions.txt
+  git reset --hard v1.10.1 && \  
+  pip install -r requirements_versions.txt && \  
+  pip install --force-reinstall typing_extensions
+  
+
+RUN pip install -U typing_extensions
+
 
 
 ENV ROOT=/stable-diffusion-webui
