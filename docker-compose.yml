@@ -97,3 +97,11 @@ services:
       - ENABLE_IMAGE_GENERATION=true
       - IMAGE_GENERATION_ENGINE=automatic1111
       - AUTOMATIC1111_BASE_URL=http://auto:7860 # the internal adress of the auto  container
+      - CONTENT_EXTRACTION_ENGINE=tika
+      - TIKA_SERVER_URL=http://tika:9998 
+  tika:
+    image: apache/tika:latest-full # make sure to take full, the other ones do not have tesseract ocr!
+    container_name: tika
+    profiles: ["ai"]
+    ports:
+      - 9998:9998
