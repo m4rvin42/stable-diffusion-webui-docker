@@ -98,10 +98,31 @@ services:
       - IMAGE_GENERATION_ENGINE=automatic1111
       - AUTOMATIC1111_BASE_URL=http://auto:7860 # the internal adress of the auto  container
       - CONTENT_EXTRACTION_ENGINE=tika
-      - TIKA_SERVER_URL=http://tika:9998 
+      - TIKA_SERVER_URL=http://tika:9998
   tika:
     image: apache/tika:latest-full # make sure to take full, the other ones do not have tesseract ocr!
     container_name: tika
     profiles: ["ai"]
     ports:
       - 9998:9998
+  openedaispeech:
+    build:
+      dockerfile: Dockerfile
+    image: ghcr.io/matatonic/openedai-speech
+    env_file: speech.env
+    profiles: ["ai"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./voices:/app/voices
+      - ./config:/app/config
+    # To install as a service
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              #device_ids: ['0', '1'] # Select a gpu, or
+              count: all
+              capabilities: [gpu]
