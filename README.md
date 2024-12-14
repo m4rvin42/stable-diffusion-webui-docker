@@ -46,3 +46,10 @@ Special thanks to everyone behind these awesome projects, without them, none of 
 - [CompVis/stable-diffusion](https://github.com/CompVis/stable-diffusion)
 - [Sygil-webui](https://github.com/Sygil-Dev/sygil-webui)
 - and many many more.
+
+
+nginx:
+mkdir -p /path/to/certs
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /path/to/certs/nginx-selfsigned.key \
+  -out /path/to/certs/nginx-selfsigned.crt
