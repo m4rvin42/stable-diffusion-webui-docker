@@ -138,3 +138,16 @@ services:
       - "443:443"
     depends_on:
       - openwebui
+
+  unslothtrainer:
+    build: ./services/unslothtrainer
+    image: unslothtrainer
+    container_name: unslothtrainer
+    profiles: ["ai"]
+    volumes:
+      # persist models in ./models on host machine
+      # translates to the llocation of the docker-compose.yaml on host machine
+      #- "./models:/root/.ollama/models/blobs"
+      - "ollama-modelsv1:/root/.ollama/models/blobs"
+    ports:
+      - "8888:8888"

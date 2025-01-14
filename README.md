@@ -53,3 +53,7 @@ mkdir -p /path/to/certs
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout /path/to/certs/nginx-selfsigned.key \
   -out /path/to/certs/nginx-selfsigned.crt
+
+
+start the docker compose:
+sudo docker compose --profile ai up
