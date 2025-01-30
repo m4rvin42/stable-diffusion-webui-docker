@@ -67,7 +67,7 @@ services:
   # ollama provides the framework for  runnning the LLM's
   ollama:
     <<: *base_service
-    image: ollama/ollama:latest  
+    image: ollama/ollama:0.5.7
     container_name: ollama
     profiles: ["ai"]
     ports:
@@ -99,6 +99,13 @@ services:
       - AUTOMATIC1111_BASE_URL=http://auto:7860 # the internal adress of the auto  container
       - CONTENT_EXTRACTION_ENGINE=tika
       - TIKA_SERVER_URL=http://tika:9998
+      - AUDIO_TTS_OPENAI_API_BASE_URL=http://host.docker.internal:8000/v1
+      - AUDIO_TTS_OPENAI_API_KEY=sk-111111111 #just dummy (the used container ignores the key)
+      - AUDIO_TTS_VOICE=shimmer #ash, coral, echo, fable,onyx, noca, sage, shimmer
+      - AUDIO_TTS_MODEL=tts-1
+      - AUDIO_TTS_ENGINE=openai
+
+
   tika:
     image: apache/tika:latest-full # make sure to take full, the other ones do not have tesseract ocr!
     container_name: tika
@@ -139,15 +146,22 @@ services:
     depends_on:
       - openwebui
 
-  unslothtrainer:
-    build: ./services/unslothtrainer
-    image: unslothtrainer
-    container_name: unslothtrainer
-    profiles: ["ai"]
-    volumes:
-      # persist models in ./models on host machine
-      # translates to the llocation of the docker-compose.yaml on host machine
-      #- "./models:/root/.ollama/models/blobs"
-      - "ollama-modelsv1:/root/.ollama/models/blobs"
-    ports:
-      - "8888:8888"
+  # unslothtrainer:
+  #   build: ./services/unslothtrainer
+  #   image: unslothtrainer
+  #   container_name: unslothtrainer
+  #   profiles: ["ai"]
+  #   volumes:
+  #     # persist models in ./models on host machine
+  #     # translates to the llocation of the docker-compose.yaml on host machine
+  #     #- "./models:/root/.ollama/models/blobs"
+  #     - "ollama-modelsv1:/root/.ollama/models/blobs"
+  #   ports:
+  #     - "8888:8888"
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #             - driver: nvidia
+  #               device_ids: ['0']
+  #               capabilities: [compute, utility]

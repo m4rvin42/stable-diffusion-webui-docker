@@ -42,7 +42,7 @@ EXPOSE 8888
 
 #install cmake
 RUN apt update
-RUN apt install -y cmake
+RUN apt install -y cmake curl
 
 RUN git config --global http.postBuffer 524288000 && \
     git config --global http.lowSpeedLimit 0 && \

@@ -57,3 +57,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 
 start the docker compose:
 sudo docker compose --profile ai up
+
+
+sudo docker compose --profile ai up
+sudo docker compose --profile ai up --build
