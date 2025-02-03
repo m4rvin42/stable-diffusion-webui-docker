@@ -19,7 +19,7 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -out ./certs/nginx-selfsigned.crt
 
 After that the folder structure should look like this:
-
+```
   ├──.devscripts
   ├──.github
   ├──.vscode
@@ -31,6 +31,7 @@ After that the folder structure should look like this:
   ├──output
   ├──services
   └──voices
+```
 
 
 
