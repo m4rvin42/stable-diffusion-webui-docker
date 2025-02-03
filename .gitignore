@@ -4,3 +4,5 @@
 # VSCode specific
 *.code-workspace
 /.vscode
+/certs/nginx-selfsigned.crt
+/certs/nginx-selfsigned.key

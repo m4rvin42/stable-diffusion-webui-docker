@@ -1,3 +1,53 @@
+
+This Project uses a lot of different Opensource Projects and is still experimental! BEWARE!
+
+# HTTPS and NGINX:
+
+❗THIS SHOULD BE SELFEXPLANATORY: BUT PLEASE REPLACE THOSE CERTS IN THE REPO WITH YOUR OWN❗
+(Those placed there are just for explaining, what belongs in there!)
+
+
+nginx:
+mkdir -p /path/to/certs
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /path/to/certs/nginx-selfsigned.key \
+  -out /path/to/certs/nginx-selfsigned.crt
+
+When invoked from the base folder:
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout ./certs/nginx-selfsigned.key \
+  -out ./certs/nginx-selfsigned.crt
+
+After that the folder structure should look like this:
+
+  ├──.devscripts
+  ├──.github
+  ├──.vscode
+  ├──certs
+  │     └── nginx-selfsigned.crt
+  │     └── nginx-selfsigned.key
+  ├──config
+  ├──data
+  ├──output
+  ├──services
+  └──voices
+
+
+
+# Start the Docker Compose
+start the docker compose:
+sudo docker compose --profile ai up
+
+
+sudo docker compose --profile ai up
+sudo docker compose --profile ai up --build
+
+
+
+
+
+
+
 # Stable Diffusion WebUI Docker
 
 Run Stable Diffusion on your machine with a nice UI without any hassle!
@@ -46,18 +96,3 @@ Special thanks to everyone behind these awesome projects, without them, none of 
 - [CompVis/stable-diffusion](https://github.com/CompVis/stable-diffusion)
 - [Sygil-webui](https://github.com/Sygil-Dev/sygil-webui)
 - and many many more.
-
-
-nginx:
-mkdir -p /path/to/certs
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-  -keyout /path/to/certs/nginx-selfsigned.key \
-  -out /path/to/certs/nginx-selfsigned.crt
-
-
-start the docker compose:
-sudo docker compose --profile ai up
-
-
-sudo docker compose --profile ai up
-sudo docker compose --profile ai up --build
