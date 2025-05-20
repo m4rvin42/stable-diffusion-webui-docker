@@ -67,7 +67,7 @@ services:
   # ollama provides the framework for  runnning the LLM's
   ollama:
     <<: *base_service
-    image: ollama/ollama:0.5.7
+    image: ollama/ollama:latest
     container_name: ollama
     profiles: ["ai"]
     ports:
@@ -87,7 +87,7 @@ services:
                     capabilities: [gpu]
   # openwebui provides the UI as well as the API, RAG and other advanced configurations for the LLM's
   openwebui:
-    image: ghcr.io/open-webui/open-webui:latest  
+    image: ghcr.io/open-webui/open-webui:latest #192.168.2.51:5050/openwebui:20250519-2050 
     container_name: openwebui
     profiles: ["ai"]
     ports:
