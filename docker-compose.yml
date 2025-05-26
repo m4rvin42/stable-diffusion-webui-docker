@@ -29,6 +29,7 @@ services:
   download:
     build: ./services/download/
     profiles: ["download"]
+    restart: no
     volumes:
       - *v1
 
@@ -37,6 +38,7 @@ services:
     profiles: ["auto", "ai"]
     build: ./services/AUTOMATIC1111
     image: sd-auto:78
+    restart: unless-stopped 
     environment:
       - CLI_ARGS=--allow-code --medvram --xformers --enable-insecure-extension-access --api
 
@@ -77,7 +79,7 @@ services:
       # translates to the llocation of the docker-compose.yaml on host machine
       #- "./models:/root/.ollama/models/blobs"
       - "ollama-modelsv1:/root/.ollama/models/blobs"
-    
+    restart: unless-stopped 
     deploy:
         resources:
             reservations:
@@ -89,6 +91,7 @@ services:
   openwebui:
     image: ghcr.io/open-webui/open-webui:latest #192.168.2.51:5050/openwebui:20250519-2050 
     container_name: openwebui
+    restart: unless-stopped 
     profiles: ["ai"]
     ports:
       - "5555:8080"
@@ -109,9 +112,12 @@ services:
   tika:
     image: apache/tika:latest-full # make sure to take full, the other ones do not have tesseract ocr!
     container_name: tika
+    restart: unless-stopped 
     profiles: ["ai"]
     ports:
       - 9998:9998
+      
+      
   openedaispeech:
     build:
       dockerfile: Dockerfile
@@ -124,7 +130,7 @@ services:
       - ./voices:/app/voices
       - ./config:/app/config
     # To install as a service
-    restart: unless-stopped
+    restart: unless-stopped 
     deploy:
       resources:
         reservations:
@@ -136,6 +142,7 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    restart: unless-stopped 
     profiles: ["ai"]
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
